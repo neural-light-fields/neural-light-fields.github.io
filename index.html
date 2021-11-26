@@ -1,5 +1,810 @@
+<!doctype html>
 <html>
+<head>
+<title>Learning Neural Light Fields with Ray-Space Embedding Networks</title>
+<style>
+html {
+  background-color: #eee;
+  margin: 0;
+  scroll-behavior: smooth;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, helvetica, arial, sans-serif;
+  /* font-size: 11pt; */
+  /* line-height: 1.2em; */
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 300;
+  text-align: left;
+  background-color: white;
+  color: #222;
+  width: 840px;
+  margin: 0 auto;
+  padding: 18px 12px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+  -webkit-font-smoothing: antialiased;
+}
+h1 {
+  /* text-align: center; */
+  text-align: left;
+}
+h1 {
+  font-size: 1.5em;
+  margin-top: 2em;
+  margin-bottom: 1em;
+}
+h2 {
+  font-size: 1.15em;
+  margin-top: 1.5em;
+  /* margin-bottom: 0; */
+}
+h2 span:last-child {
+  float: right;
+  font-weight: bold;
+  color: #333;
+  background-color: #ddd;
+  border-radius: 0.2em;
+  padding: 0 0.3em 0 0.35em;
+  font-size: 0.8em;
+  font-family: verdana;
+}
+p, ul {
+  /* margin-top: 0.6em;
+  margin-bottom: 1.1em; */
+}
+ul {
+  padding-left: 2em;
+}
+a {
+  text-decoration: underline; color: black;
+}
+a:hover {
+  text-decoration: underline; color: gray;
+}
+a.invert {
+  text-decoration: underline; color: white;
+}
+a.invert:hover {
+  text-decoration: underline; color: #ccc;
+}
+/* wrap long lines */
+pre {
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+  text-align: left;
+}
+pre {
+  border-left: 5px solid #eee;
+  padding-left: 5px;
+}
+@media only screen and (max-device-width: 480px) {
+  html { background-color: white; }
+  body { width: 97%; box-shadow: none; }
+  body {
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust:    100%;
+    -ms-text-size-adjust:     100%;
+  }
+  body { font-size: 1.25em; font-size: 2.1vw; line-height: 1.6em; line-height: 2.7vw; }
+}
+@media print {
+  html { background-color: white; }
+  body { width: 97%; box-shadow: none; }
+}
+
+button {
+  padding: 0.5em 0.75em;
+  margin: 0.4em 0.4em;
+  min-width: 18ch;
+  max-width: 18ch;
+  text-align: left;
+  background-color: #ddd;
+  color: #333;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+
+  @media screen and (-ms-high-contrast: active) {
+    border: 2px solid currentcolor;
+  }
+}
+
+button.on {
+  background-color: #333;
+  color: #bbb;
+}
+
+p.btncap {
+  margin: 0.4em 0.4em;
+  padding: 0 0.2em;
+  color: #333;
+  border-bottom: 2px solid #333;
+  font-weight: bold;
+  font-style: italic;
+  font-size: 0.8em;
+}
+
+.center {
+  text-align: center;
+}
+.flex {
+  display: flex;
+}
+.desc {
+  margin: 1.5em 0.4em;
+}
+.wider_buttons button {
+  display: block;
+  min-width: 18ch;
+  max-width: 18ch;
+}
+.narrow_buttons button {
+  text-align: center;
+  display: block;
+  min-width: 11ch;
+}
+button {
+  display: block;
+}
+video {
+  display: none;
+  width: 540px;
+  height: 540px;
+  margin: 0.4em;
+}
+video.on {
+  display: block;
+}
+img[id^="img"] {
+  display: none;
+  max-width: 540px;
+  max-height: 540px;
+  width: auto;
+  height: auto;
+  margin: 0.4em;
+}
+img.shiny_img {
+  display: none;
+  width: 504px;
+  height: 284px;
+  margin: 0.4em;
+}
+img.on {
+  display: block;
+}
+
+.teaser {
+}
+
+.teaser video {
+  width: 360px;
+  height: 360px;
+}
+
+/*
+div.imgcontainer {
+  display: none;
+  width: 540px;
+  height: 540px;
+  margin: 0.4em;
+}
+div.on {
+  display: block;
+}
+
+div.imgcontainer img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+}
+*/
+
+.authors {
+  display: flex;
+  justify-content: space-evenly;
+  text-align: center;
+}
+
+.authors div {
+  /* width: 25ch; */
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.authors div p:first-child {
+  font-size: 1.1em;
+  margin-bottom: 0.5em;
+}
+
+.authors div p:last-child {
+  margin-top: 0.5em;
+  font-size: 0.95em;
+}
+
+.justify {
+  text-align: justify;
+}
+
+.shadow {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+em {
+  font-weight: 600;
+}
+
+</style>
+<script>
+class ImageHandler {
+  constructor(n_datasets, n_images, databtn_id, imgbtn_id, imgtag_id) {
+    this.n_datasets = n_datasets;
+    this.n_images = n_images;
+
+    this.databtn_id = databtn_id;
+    this.imgbtn_id = imgbtn_id;
+    this.imgtag_id = imgtag_id;
+  }
+
+  select_image(j) {
+    for (let i = 0; i < this.n_images; i++) {
+      let v = document.getElementById(this.imgtag_id + i.toString());
+      let b = document.getElementById(this.imgbtn_id + i.toString());
+      if (i == j) {
+        b.className = "on";
+        v.style.display = "block";
+      } else {
+        b.className = "";
+        v.style.display = "none";
+      }
+    }
+  };
+
+ select_dataset(j) {
+    let dataset_name = document.getElementById(this.databtn_id + j.toString()).value;
+    for (let i = 0; i < this.n_datasets; i++) {
+      document.getElementById(this.databtn_id + i.toString()).className = (i == j ? "on" : "");
+    }
+    for (let i = 0; i < this.n_images; i++) {
+      let image_name = document.getElementById(this.imgbtn_id + i.toString()).value;
+      let v = document.getElementById(this.imgtag_id + i.toString());
+      v.src = "images/" + dataset_name + "_" + image_name + ".png";
+    }
+  };
+
+  register() {
+    for (let i = 0; i < this.n_datasets; i++) {
+      document.getElementById(this.databtn_id + i.toString()).addEventListener("click", function() { this.select_dataset(i); }.bind(this, i));
+    }
+
+    for (let i = 0; i < this.n_images; i++) {
+      document.getElementById(this.imgbtn_id + i.toString()).addEventListener("click", function() { this.select_image(i); }.bind(this, i));
+    }
+
+    //this.select_image(0);
+  }
+}
+
+class VideoHandler {
+  constructor(n_datasets, n_videos, databtn_id, vidbtn_id, vidtag_id) {
+    this.n_datasets = n_datasets;
+    this.n_videos = n_videos;
+
+    this.databtn_id = databtn_id;
+    this.vidbtn_id = vidbtn_id;
+    this.vidtag_id = vidtag_id;
+  }
+
+  get paused() {
+    return document.getElementById(this.vidtag_id + "0").paused;
+  }
+
+  sync_video(e) {
+    if (e === undefined) {
+      return;
+    }
+    for (let i = 0; i < this.n_videos; i++) {
+      let v = document.getElementById(this.vidtag_id + i.toString());
+      if (v != e.currentTarget) {
+        v.currentTime = e.currentTarget.currentTime;
+      }
+    }
+  };
+
+  play_video(e) {
+    this.sync_video(e);
+    for (let i = 0; i < this.n_videos; i++) {
+      document.getElementById(this.vidtag_id + i.toString()).play();
+    }
+  };
+
+  pause_video(e) {
+    for (let i = 0; i < this.n_videos; i++) {
+      document.getElementById(this.vidtag_id + i.toString()).pause();
+    }
+    this.sync_video(e);
+  };
+
+  select_video(j) {
+    for (let i = 0; i < this.n_videos; i++) {
+      let v = document.getElementById(this.vidtag_id + i.toString());
+      let b = document.getElementById(this.vidbtn_id + i.toString());
+      if (i == j) {
+        b.className = "on";
+        v.style.display = "block";
+        v.addEventListener("play", this);
+        v.addEventListener("pause", this);
+        v.addEventListener("seeking", this);
+        v.addEventListener("seeked", this);
+        v.addEventListener("playing", this);
+      } else {
+        b.className = "";
+        v.style.display = "none";
+        v.removeEventListener("play", this);
+        v.removeEventListener("pause", this);
+        v.removeEventListener("seeking", this);
+        v.removeEventListener("seeked", this);
+        v.removeEventListener("playing", this);
+      }
+    }
+  };
+
+  handleEvent(e) {
+    switch (e.type) {
+      case "play": this.play_video(e); break;
+      case "pause": this.pause_video(e); break;
+      case "seeking": this.sync_video(e); break;
+      case "seeked": this.sync_video(e); break;
+      case "playing": this.sync_video(e); break;
+    }
+  }
+
+  select_dataset(j) {
+    let autoplay = !this.paused;
+    let dataset_name = document.getElementById(this.databtn_id + j.toString()).value;
+    for (let i = 0; i < this.n_datasets; i++) {
+      document.getElementById(this.databtn_id + i.toString()).className = (i == j ? "on" : "");
+    }
+    for (let i = 0; i < this.n_videos; i++) {
+      let video_name = document.getElementById(this.vidbtn_id + i.toString()).value;
+      let v = document.getElementById(this.vidtag_id + i.toString());
+      v.src = "videos/" + dataset_name + "_" + video_name + ".mp4";
+    }
+    if (autoplay) {
+      this.play_video();
+    }
+  };
+
+  register() {
+    for (let i = 0; i < this.n_datasets; i++) {
+      document.getElementById(this.databtn_id + i.toString()).addEventListener("click", function() { this.select_dataset(i); }.bind(this, i));
+    }
+
+    for (let i = 0; i < this.n_videos; i++) {
+      document.getElementById(this.vidbtn_id + i.toString()).addEventListener("click", function() { this.select_video(i); }.bind(this, i));
+    }
+
+    for (let i = 0; i < this.n_videos; i++) {
+      document.getElementById(this.vidtag_id + i.toString()).muted = true;
+    }
+
+    //this.select_video(0);
+  }
+}
+
+window.onload = function() {
+  imgcmp_sparse_handler = new ImageHandler(8, 4, "imgcmp_sparse_data", "imgcmp_sparse_btn", "imgcmp_sparse_img");
+  imgcmp_sparse_handler.register();
+
+  imgcmp_dense_handler = new ImageHandler(12, 4, "imgcmp_dense_data", "imgcmp_dense_btn", "imgcmp_dense_img");
+  imgcmp_dense_handler.register();
+
+  imgabl_embedding_handler = new ImageHandler(20, 4, "imgabl_embedding_data", "imgabl_embedding_btn", "imgabl_embedding_img");
+  imgabl_embedding_handler.register();
+
+  imgabl_subdivision_handler = new ImageHandler(8, 5, "imgabl_subdivision_data", "imgabl_subdivision_btn", "imgabl_subdivision_img");
+  imgabl_subdivision_handler.register();
+
+  vidcmp_sparse_handler = new VideoHandler(3, 3, "vidcmp_sparse_data", "vidcmp_sparse_btn", "vidcmp_sparse_vid");
+  vidcmp_sparse_handler.register();
+  vidcmp_sparse_handler.play_video();
+
+  vidcmp_dense_handler = new VideoHandler(3, 4, "vidcmp_dense_data", "vidcmp_dense_btn", "vidcmp_dense_vid");
+  vidcmp_dense_handler.register();
+  vidcmp_dense_handler.play_video();
+
+  vidcmp_embed_handler = new VideoHandler(1, 4, "vidcmp_embed_data", "vidcmp_embed_btn", "vidcmp_embed_vid");
+  vidcmp_embed_handler.register();
+  vidcmp_embed_handler.play_video();
+
+  imgcmp_shiny_handler = new ImageHandler(2, 4, "imgcmp_shiny_data", "imgcmp_shiny_btn", "imgcmp_shiny_img");
+  imgcmp_shiny_handler.register();
+};
+</script>
+</head>
 <body>
-<h1>Hello, World!</h1>
+<h1 class="center">Learning Neural Light Fields with Ray-Space Embedding Networks</h1>
+<div class="authors">
+  <div>
+    <p><a href="https://www.battal.me/">Benjamin Attal</a></p>
+    <p>Carnegie Mellon University</p>
+  </div>
+  <div>
+    <p><a href="https://jbhuang0604.github.io/">Jia-Bin Huang</a></p>
+    <p>Meta Reality Labs</p>
+  </div>
+  <div>
+    <p><a href="https://zollhoefer.com/">Michael Zollh&ouml;fer</a></p>
+    <p>Meta Reality Labs</p>
+  </div>
+  <div>
+    <p><a href="https://johanneskopf.de/">Johannes Kopf</a></p>
+    <p>Meta Reality Labs</p>
+  </div>
+  <div>
+    <p><a href="https://changilkim.com/">Changil Kim</a></p>
+    <p>Meta Reality Labs</p>
+  </div>
+</div>
+<div style="text-align: center; margin-top: 2em; justify-content: space-around;">
+  <span style="background-color: #555; color: white; border-radius: 0.5em; padding: 0.3em 1em 0.5em 1em;"><a href="#" class="invert">Paper (ArXiv)</a></span> &nbsp;
+  <span style="background-color: #555; color: white; border-radius: 0.5em; padding: 0.3em 1em 0.5em 1em;"><a href="#" class="invert">Code (coming soon)</a></span>
+</div>
+<div class="flex" style="justify-content: space-between; align-items: center; margin-top: 2em;">
+  <img src="figures/teaser_illustration.svg" style="width: 29%;"/>
+  <img src="figures/teaser_visual.svg" style="width: 40%;"/>
+  <img src="figures/teaser_graph.svg" style="width: 29%;"/>
+</div>
+<p class="justify">We present <em>Neural Light Fields with Ray-Space Embedding</em>, which map rays directly to integrated radiance (<em>left</em>). Our representation allows for high-quality view synthesis with faithful reconstruction of complex view dependence (<em>middle</em>). We are able to synthesize novel views in a fraction of the time required for the current state-of-the-art approaches, with comparable memory footprint. Our method achieves a more favorable trade-off between quality, speed, and memory than existing approaches for both dense and sparse light fields (<em>right</em>). Select results are shown <a href="#top">below</a>.</p>
+<h2>Abstract</h2>
+<p class="justify">Neural radiance fields (NeRFs) produce state-of-the-art view synthesis results. However, they are slow to render, requiring hundreds of network evaluations per pixel to approximate a volume rendering integral. Baking NeRFs into explicit data structures enables efficient rendering, but results in a large increase in memory footprint and, in many cases, a quality reduction. In this paper, we propose a novel neural light field representation that, in contrast, is compact and directly predicts integrated radiance along rays. Our method supports rendering with a single network evaluation per pixel for small baseline light field datasets and can also be applied to larger baselines with only a few evaluations per pixel. At the core of our approach is a ray-space embedding network that maps the 4D ray-space manifold into an intermediate, interpolable latent space. Our method achieves state-of-the-art quality on dense forward-facing datasets such as the Stanford Light Field dataset. In addition, for forward-facing scenes with sparser inputs we achieve results that are competitive with NeRF-based approaches in terms of quality while providing a better speed/quality/memory trade-off with far fewer network evaluations.</p>
+<h2>BibTeX</h2>
+<pre><code>@article{attal2021learning,
+  author    = {Benjamin Attal and Jia-Bin Huang and Michael Zollh{\"o}fer and Johannes Kopf and Changil Kim},
+  title     = {Learning Neural Light Fields with Ray-Space Embedding Networks},
+  year      = {2021},
+  journal   = {arXiv preprint arXiv:},
+}</code></pre>
+<h2 id="top">Experimental Results</h2>
+<div>
+  <ul>
+    <li>Comparisons with Baselines
+      <ul>
+        <li><a href="#imgcmp_sparse">Sparse Light Fields</a></li>
+        <li><a href="#imgcmp_dense">Dense Light Fields</a></li>
+      </ul>
+    </li>
+    <li>Ablations
+      <ul>
+        <li><a href="#imgabl_embedding">Embedding Networks</a></li>
+        <li><a href="#imgabl_subdivision">Subdivision</a></li>
+      </ul>
+    </li>
+    <li><a href="#imgcmp_shiny">Qualititative Comparisons on the Dense Shiny Dataset Scenes</a></li>
+    <li>Video Comparisons with Baselines
+      <ul>
+        <li><a href="#vidcmp_sparse">Sparse Light Fields</a></li>
+        <li><a href="#vidcmp_dense">Dense Light Fields</a></li>
+      </ul>
+    </li>
+    <li><a href="#vidcmp_embed">Embedding Comparison for Dense Light Fields</a></li>
+  </ul>
+</div>
+<h2 id="imgcmp_sparse">
+  Comparisons on Sparse Light Fields
+  <span><a href="#top">&uarr;</a></span>
+</h2>
+<div class="flex">
+  <div>
+    <div class="flex">
+      <div>
+        <button id="imgcmp_sparse_data0" value="llff_fern">Fern</button>
+        <button id="imgcmp_sparse_data1" value="llff_flower">Flower</button>
+        <button id="imgcmp_sparse_data2" value="llff_fortress">Fortress</button>
+        <button id="imgcmp_sparse_data3" value="llff_horns" class="on">Horns</button>
+        <button id="imgcmp_sparse_data4" value="llff_leaves">Leaves</button>
+        <button id="imgcmp_sparse_data5" value="llff_orchids">Orchids</button>
+        <button id="imgcmp_sparse_data6" value="llff_room">Room</button>
+        <button id="imgcmp_sparse_data7" value="llff_trex">T-Rex</button>
+      </div>
+      <div class="wider_buttons">
+        <button id="imgcmp_sparse_btn0" value="gt">Ground Truth</button>
+        <button id="imgcmp_sparse_btn1" value="ours" class="on">Our Result</button>
+        <button id="imgcmp_sparse_btn2" value="nerf">NeRF</button>
+        <button id="imgcmp_sparse_btn3" value="ours_teacher">Ours (w/ Teacher)</button>
+      </div>
+    </div>
+    <div class="desc">
+      <p>We evaluate our model with a 32<sup>3</sup> voxel grid on sparse, unstructured light fields.</p>
+      <p><b>Datasets.</b> We use all 8 scenes from the NeRF Real Forward-Facing dataset.</p>
+      <p><b>Baselines.</b> We observe better reproduction of view dependence, sharpness, and overall improved perceptual fidelity of our method over NeRF, while rendering much faster. We can sometimes struggle when there exist thin features with large disparity and complex occlusions (see the Fern sequence).</p>
+    </div>
+  </div>
+  <div>
+    <img id="imgcmp_sparse_img0" src="images/llff_horns_gt.png"/>
+    <img id="imgcmp_sparse_img1" src="images/llff_horns_ours.png" class="on"/>
+    <img id="imgcmp_sparse_img2" src="images/llff_horns_nerf.png"/>
+    <img id="imgcmp_sparse_img3" src="images/llff_horns_ours_teacher.png"/>
+  </div>
+</div>
+<h2 id="imgcmp_dense">
+  Comparisons on Dense Light Fields
+  <span><a href="#top">&uarr;</a></span>
+</h2>
+<div class="flex">
+  <div>
+    <div class="flex">
+      <div>
+        <button id="imgcmp_dense_data0" value="stanford_gem">Amethyst</button>
+        <button id="imgcmp_dense_data1" value="stanford_beans">Beans</button>
+        <button id="imgcmp_dense_data2" value="stanford_bracelet">Bracelet</button>
+        <button id="imgcmp_dense_data3" value="stanford_bulldozer">Bulldozer</button>
+        <button id="imgcmp_dense_data4" value="stanford_bunny">Bunny</button>
+        <button id="imgcmp_dense_data5" value="stanford_chess">Chess</button>
+        <button id="imgcmp_dense_data6" value="stanford_flowers">Flowers</button>
+        <button id="imgcmp_dense_data7" value="stanford_knights">Knights</button>
+        <button id="imgcmp_dense_data9" value="stanford_tarot_small" class="on">Tarot (Small)</button>
+        <button id="imgcmp_dense_data8" value="stanford_tarot">Tarot (Large)</button>
+        <button id="imgcmp_dense_data10" value="stanford_treasure">Treasure</button>
+        <button id="imgcmp_dense_data11" value="stanford_truck">Truck</button>
+      </div>
+      <div class="wider_buttons">
+        <button id="imgcmp_dense_btn0" value="gt">Ground Truth</button>
+        <button id="imgcmp_dense_btn1" value="ours" class="on">Our Result</button>
+        <button id="imgcmp_dense_btn2" value="nerf">NeRF</button>
+        <button id="imgcmp_dense_btn3" value="xfields">X-Fields</button>
+      </div>
+    </div>
+    <div class="desc">
+      <p>We evaluate our model without subdivision on dense 5x5 light fields.</p>
+      <p><b>Datasets.</b> We use all 12 scenes from the Stanford Light Fields dataset.</p>
+      <p><b>Baselines.</b> NeRF interpolates in a geometrically consistent manner, but fails to capture high frequency view dependence such as reflections and refractions. X-Fields also struggles with high frequency view dependence in some cases, and can also exhibit minor ghosting artifacts. We render much faster than NeRF, and about half as fast as X-Fields. Both baselines, in general, have worse sharpness than our method&mdash;however, our embedding network struggles to identify correspondences and interpolate on larger baseline sequences such as Tarot (Large) and Knights.</p>
+    </div>
+  </div>
+  <div>
+    <img id="imgcmp_dense_img0" src="images/stanford_tarot_small_gt.png"/>
+    <img id="imgcmp_dense_img1" src="images/stanford_tarot_small_ours.png" class="on"/>
+    <img id="imgcmp_dense_img2" src="images/stanford_tarot_small_nerf.png"/>
+    <img id="imgcmp_dense_img3" src="images/stanford_tarot_small_xfields.png"/>
+  </div>
+</div>
+<h2 id="imgabl_embedding">
+  Ablations on Embedding Networks
+  <span><a href="#top">&uarr;</a></span>
+</h2>
+<div class="flex">
+  <div>
+    <div class="flex">
+      <div>
+        <p class="btncap">Sparse</p>
+        <button id="imgabl_embedding_data0" value="llff_fern">Fern</button>
+        <button id="imgabl_embedding_data1" value="llff_flower">Flower</button>
+        <button id="imgabl_embedding_data2" value="llff_fortress">Fortress</button>
+        <button id="imgabl_embedding_data3" value="llff_horns" class="on">Horns</button>
+        <button id="imgabl_embedding_data4" value="llff_leaves">Leaves</button>
+        <button id="imgabl_embedding_data5" value="llff_orchids">Orchids</button>
+        <button id="imgabl_embedding_data6" value="llff_room">Room</button>
+        <button id="imgabl_embedding_data7" value="llff_trex">T-Rex</button>
+        <p class="btncap">Dense</p>
+        <button id="imgabl_embedding_data8" value="stanford_gem">Amethyst</button>
+        <button id="imgabl_embedding_data9" value="stanford_beans">Beans</button>
+        <button id="imgabl_embedding_data10" value="stanford_bracelet">Bracelet</button>
+        <button id="imgabl_embedding_data11" value="stanford_bulldozer">Bulldozer</button>
+        <button id="imgabl_embedding_data12" value="stanford_bunny">Bunny</button>
+        <button id="imgabl_embedding_data13" value="stanford_chess">Chess</button>
+        <button id="imgabl_embedding_data14" value="stanford_flowers">Flowers</button>
+        <button id="imgabl_embedding_data15" value="stanford_knights">Knights</button>
+        <button id="imgabl_embedding_data16" value="stanford_tarot_small">Tarot (Small)</button>
+        <button id="imgabl_embedding_data17" value="stanford_tarot">Tarot (Large)</button>
+        <button id="imgabl_embedding_data18" value="stanford_treasure">Treasure</button>
+        <button id="imgabl_embedding_data19" value="stanford_truck">Truck</button>
+      </div>
+      <div class="wider_buttons">
+        <button id="imgabl_embedding_btn0" value="gt">Ground Truth</button>
+        <button id="imgabl_embedding_btn1" value="ours_no_warp">No Embedding</button>
+        <button id="imgabl_embedding_btn2" value="ours_feature">Feature Embedding</button>
+        <button id="imgabl_embedding_btn3" value="ours" class="on">Local Affine-Transformation Embedding</button>
+      </div>
+    </div>
+    <div class="desc">
+      <p>We evaluate alternative embedding approaches, including our model without an embedding network and our model with feature space embedding. All experiments on sparse data are for our subdivided model with a 32<sup>3</sup> voxel grid, while no subdivision is used for dense data.</p>
+      <p><b>Datasets.</b> We use 8 scenes from the NeRF Real Forward-Facing dataset and 12 scenes from the Stanford Light Fields dataset.</p>
+      <p><b>Baselines.</b> Local affine-transformation embedding leads to the best overall qualititative and quantitative performance. For some large baseline scenes, such as Tarot (Large), feature embedding can lead to better interpolation of refractive effects, since it does not implicitly enforce local planarity of color level sets within the light field.</p>
+    </div>
+  </div>
+  <div>
+    <img id="imgabl_embedding_img0" src="images/llff_horns_gt.png"/>
+    <img id="imgabl_embedding_img1" src="images/llff_horns_ours_no_warp.png"/>
+    <img id="imgabl_embedding_img2" src="images/llff_horns_ours_feature.png"/>
+    <img id="imgabl_embedding_img3" src="images/llff_horns_ours.png" class="on"/>
+  </div>
+</div>
+<h2 id="imgabl_subdivision">
+  Ablations on Subdivision
+  <span><a href="#top">&uarr;</a></span>
+</h2>
+<div class="flex">
+  <div>
+    <div class="flex">
+      <div>
+        <button id="imgabl_subdivision_data0" value="llff_fern">Fern</button>
+        <button id="imgabl_subdivision_data1" value="llff_flower">Flower</button>
+        <button id="imgabl_subdivision_data2" value="llff_fortress">Fortress</button>
+        <button id="imgabl_subdivision_data3" value="llff_horns" class="on">Horns</button>
+        <button id="imgabl_subdivision_data4" value="llff_leaves">Leaves</button>
+        <button id="imgabl_subdivision_data5" value="llff_orchids">Orchids</button>
+        <button id="imgabl_subdivision_data6" value="llff_room">Room</button>
+        <button id="imgabl_subdivision_data7" value="llff_trex">T-Rex</button>
+      </div>
+      <div class="wider_buttons">
+        <button id="imgabl_subdivision_btn0" value="gt">Ground Truth</button>
+        <button id="imgabl_subdivision_btn1" value="ours_4">4<sup>3</sup></button>
+        <button id="imgabl_subdivision_btn2" value="ours_8">8<sup>3</sup></button>
+        <button id="imgabl_subdivision_btn3" value="ours_16">16<sup>3</sup></button>
+        <button id="imgabl_subdivision_btn4" value="ours" class="on">32<sup>3</sup></button>
+      </div>
+    </div>
+    <div class="desc">
+      <p>We evaluate our subdivided model with different resolution voxel grids, from 4<sup>3</sup> to 32<sup>3</sup>.</p>
+      <p><b>Datasets.</b> We use 8 scenes from the NeRF Real Forward-Facing dataset.</p>
+      <p><b>Baselines.</b> Even with low resolution voxel grids, our model still produces accurate image predictions, albeit with slightly reduced geometric consistency.</p>
+    </div>
+  </div>
+  <div>
+    <img id="imgabl_subdivision_img0" src="images/llff_horns_gt.png"/>
+    <img id="imgabl_subdivision_img1" src="images/llff_horns_ours_4.png"/>
+    <img id="imgabl_subdivision_img2" src="images/llff_horns_ours_8.png"/>
+    <img id="imgabl_subdivision_img3" src="images/llff_horns_ours_16.png"/>
+    <img id="imgabl_subdivision_img4" src="images/llff_horns_ours.png" class="on"/>
+  </div>
+</div>
+<h2 id="imgcmp_shiny">
+  Qualititative Comparisons on the Dense Shiny Dataset Scenes
+  <span><a href="#top">&uarr;</a></span>
+</h2>
+<div class="flex">
+  <div>
+    <div class="flex">
+      <div>
+        <button id="imgcmp_shiny_data0" value="shiny_cd" class="on">CD</button>
+        <button id="imgcmp_shiny_data1" value="shiny_lab">Lab</button>
+      </div>
+      <div class="wider_buttons">
+        <button id="imgcmp_shiny_btn0" value="gt">Ground Truth</button>
+        <button id="imgcmp_shiny_btn1" value="ours" class="on">Our Result</button>
+        <button id="imgcmp_shiny_btn2" value="nerf">NeRF</button>
+        <button id="imgcmp_shiny_btn3" value="nex">NeX</button>
+      </div>
+    </div>
+    <div class="desc">
+      <p>We show qualitative results on unstructured, dense sequences within the Shiny dataset.</p>
+      <p><b>Datasets.</b> We use 2 scenes from the Shiny Dataset&mdash;CD and Lab.</a></p>
+      <p><b>Baselines.</b> We observe better reproduction of view dependence for heldout views, specifically of reflections and refractions. Observe the refractions in the liquids in both sequences, and the reflections on the CD and textbook.</p>
+    </div>
+  </div>
+  <div>
+    <img id="imgcmp_shiny_img0" src="images/shiny_cd_gt.png" class="shiny_img"/>
+    <img id="imgcmp_shiny_img1" src="images/shiny_cd_ours.png" class="shiny_img on"/>
+    <img id="imgcmp_shiny_img2" src="images/shiny_cd_nerf.png" class="shiny_img"/>
+    <img id="imgcmp_shiny_img3" src="images/shiny_cd_nex.png" class="shiny_img"/>
+  </div>
+</div>
+<h2 id="vidcmp_sparse">
+  View Synthesis Videos from Sparse Light Fields
+  <span><a href="#top">&uarr;</a></span>
+</h2>
+<div class="flex">
+  <div>
+    <div class="flex">
+      <div>
+        <button id="vidcmp_sparse_data0" value="llff_fern">Fern</button>
+        <button id="vidcmp_sparse_data1" value="llff_horns" class="on">Horns</button>
+        <button id="vidcmp_sparse_data2" value="llff_leaves">Leaves</button>
+      </div>
+      <div class="wider_buttons">
+        <button id="vidcmp_sparse_btn0" value="ours" class="on">Our Result</button>
+        <button id="vidcmp_sparse_btn1" value="nerf">NeRF</button>
+        <button id="vidcmp_sparse_btn2" value="ours_teacher">Ours (w/ Teacher)</button>
+      </div>
+    </div>
+    <div class="desc">
+      <p>We show spiral trajectories for a select few scenes.</p>
+      <p><b>Datasets.</b> We use 3 scenes from the NeRF Real Forward-Facing dataset&mdash;Fern, Horns, and Leaves.</p>
+      <p><b>Baselines.</b> For the Fern scene, our model exhbits some artifacts around the fern leaves, which improve with student teacher training. For the Horns scene, we better reproduce the many glass reflections. For the Leaves scene, although we have worse quantitative performance on PSNR and SSIM (and some floating artifacts near the boundaries of the images), our models with and without student teacher training have better sharpness than NeRF. </p>
+    </div>
+  </div>
+  <div>
+    <video id="vidcmp_sparse_vid0" controls loop class="on">
+      <source src="videos/llff_horns_ours.mp4" type="video/mp4"/>
+    </video>
+    <video id="vidcmp_sparse_vid1" controls loop>
+      <source src="videos/llff_horns_nerf.mp4" type="video/mp4"/>
+    </video>
+    <video id="vidcmp_sparse_vid2" controls loop>
+      <source src="videos/llff_horns_ours_teacher.mp4" type="video/mp4"/>
+    </video>
+  </div>
+</div>
+<h2 id="vidcmp_dense">
+  View Synthesis Videos from Dense Light Fields
+  <span><a href="#top">&uarr;</a></span>
+</h2>
+<div class="flex">
+  <div>
+    <div class="flex">
+      <div>
+        <button id="vidcmp_dense_data0" value="stanford_treasure" class="on">Treasure</button>
+        <button id="vidcmp_dense_data1" value="stanford_bulldozer">Bulldozer</button>
+        <button id="vidcmp_dense_data2" value="stanford_tarot_small">Tarot (Small)</button>
+      </div>
+      <div class="wider_buttons">
+        <button id="vidcmp_dense_btn0" value="gt">Nearest Ground Truth View</button>
+        <button id="vidcmp_dense_btn1" value="ours" class="on">Our Result</button>
+        <button id="vidcmp_dense_btn2" value="nerf">NeRF</button>
+        <button id="vidcmp_dense_btn3" value="xfields">X-Fields</button>
+      </div>
+    </div>
+    <div class="desc">
+      <p>We show spiral or linear trajectories for a select few scenes.</p>
+      <p><b>Datasets.</b> We use 3 scenes from the Stanford Light Fields dataset&mdash;Treasure, Bulldozer, and Tarot (Small).</p>
+      <p><b>Baselines.</b> As noted previously, we show better sharpness and reproduction of view dependence than both baselines. Specifically, note the reflections on gems in Treasure, the reflections on the bulldozer arm in Bulldozer, and the refractions within the glass ball in Tarot (Small). </p>
+    </div>
+  </div>
+  <div>
+    <video id="vidcmp_dense_vid0" controls loop>
+      <source src="videos/stanford_treasure_gt.mp4" type="video/mp4"/>
+    </video>
+    <video id="vidcmp_dense_vid1" controls loop class="on">
+      <source src="videos/stanford_treasure_ours.mp4" type="video/mp4"/>
+    </video>
+    <video id="vidcmp_dense_vid2" controls loop>
+      <source src="videos/stanford_treasure_nerf.mp4" type="video/mp4"/>
+    </video>
+    <video id="vidcmp_dense_vid3" controls loop>
+      <source src="videos/stanford_treasure_xfields.mp4" type="video/mp4"/>
+    </video>
+  </div>
+</div>
+<h2 id="vidcmp_embed">
+  Embedding Comparison for Dense Light Fields
+  <span><a href="#top">&uarr;</a></span>
+</h2>
+<div class="flex">
+  <div>
+    <div class="flex">
+      <div>
+        <button id="vidcmp_embed_data0" value="stanford_bulldozer" class="on">Bulldozer</button>
+      </div>
+      <div class="wider_buttons">
+        <button id="vidcmp_embed_btn0" value="gt">Nearest Ground Truth View</button>
+        <button id="vidcmp_embed_btn1" value="ours_no_warp">No Embedding</button>
+        <button id="vidcmp_embed_btn2" value="ours_feature">Feature Embedding</button>
+        <button id="vidcmp_embed_btn3" value="ours" class="on">Local Affine-Transformation Embedding</button>
+      </div>
+    </div>
+    <div class="desc">
+      <p>We compare our embedding approaches in video form for a single dense scene.</p>
+      <p><b>Datasets.</b> We use the Bulldozer scene from the Stanford Light Fields dataset.</p>
+      <p><b>Baselines.</b> Our method without embedding leads to predictions that are severely distorted, and that do not maintain multi-view consistency. Our feature embedding approach exhibits low frequency "wobbling" artifacts that are obvious when the video is viewed in full screen. Our local affine-transformation embedding approach leads to the best overall quantitative performance, and multi-view consistency. </p>
+    </div>
+  </div>
+  <div>
+    <video id="vidcmp_embed_vid0" controls loop>
+      <source src="videos/stanford_bulldozer_gt.mp4" type="video/mp4"/>
+    </video>
+    <video id="vidcmp_embed_vid1" controls loop>
+      <source src="videos/stanford_bulldozer_ours_no_warp.mp4" type="video/mp4"/>
+    </video>
+    <video id="vidcmp_embed_vid2" controls loop>
+      <source src="videos/stanford_bulldozer_ours_feature.mp4" type="video/mp4"/>
+    </video>
+    <video id="vidcmp_embed_vid3" controls loop class="on">
+      <source src="videos/stanford_bulldozer_ours.mp4" type="video/mp4"/>
+    </video>
+  </div>
+</div>
 </body>
 </html>
