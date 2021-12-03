@@ -57,11 +57,41 @@ a:hover {
   text-decoration: underline; color: gray;
 }
 a.invert {
-  text-decoration: underline; color: white;
+  text-decoration: none; color: white; font-weight: bold;
 }
 a.invert:hover {
-  text-decoration: underline; color: #ccc;
+  text-decoration: none; color: #ccc;
 }
+
+div.links {
+  text-align: center;
+  justify-content: space-around;
+  margin-top: 1.5em;
+  margin-bottom: 3em;
+}
+div.links a {
+  text-decoration: none;
+}
+div.links a:hover {
+  text-decoration: none;
+}
+div.links span {
+  background-color: #444;
+  color: white;
+  font-weight: bold;
+  border-radius: 0.5em;
+  padding: 0.4em 1em 0.5em 1em;
+  margin: 0 0.2em;
+}
+div.links span:hover {
+  background-color: #777;
+}
+div.links img {
+  height: 1em;
+  vertical-align: -10%;
+  filter: brightness(0%) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(24deg) brightness(100%) contrast(100%);
+}
+
 /* wrap long lines */
 pre {
   white-space: pre-wrap;
