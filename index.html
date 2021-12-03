@@ -49,9 +49,9 @@ window.onload = function() {
 </div>
 
 <div style="text-align: center; margin-top: 2em; justify-content: space-around; margin-bottom: 3em;">
-  <span style="background-color: #555; color: white; border-radius: 0.5em; padding: 0.3em 1em 0.5em 1em;"><a href="#" class="invert">Paper (ArXiv)</a></span> &nbsp;
+  <span style="background-color: #555; color: white; border-radius: 0.5em; padding: 0.3em 1em 0.5em 1em;"><a href="https://arxiv.org/abs/2112.01523" class="invert">Paper (arXiv)</a></span> &nbsp;
   <span style="background-color: #555; color: white; border-radius: 0.5em; padding: 0.3em 1em 0.5em 1em;"><a href="results.html" class="invert">Supplemental Results</a></span> &nbsp;
-  <span style="background-color: #555; color: white; border-radius: 0.5em; padding: 0.3em 1em 0.5em 1em;"><a href="#" class="invert">Video (coming soon)</a></span> &nbsp;
+  <span style="background-color: #555; color: white; border-radius: 0.5em; padding: 0.3em 1em 0.5em 1em;"><a href="https://www.youtube.com/watch?v=HR8TIyKtoWA" class="invert">Overview Video</a></span> &nbsp;
   <span style="background-color: #555; color: white; border-radius: 0.5em; padding: 0.3em 1em 0.5em 1em;"><a href="#" class="invert">Code (coming soon)</a></span>
 </div>
 
@@ -192,6 +192,10 @@ window.onload = function() {
 -->
 <h2>Abstract</h2>
 <p class="justify">Neural radiance fields (NeRFs) produce state-of-the-art view synthesis results. However, they are slow to render, requiring hundreds of network evaluations per pixel to approximate a volume rendering integral. Baking NeRFs into explicit data structures enables efficient rendering, but results in a large increase in memory footprint and, in many cases, a quality reduction. In this paper, we propose a novel neural light field representation that, in contrast, is compact and directly predicts integrated radiance along rays. Our method supports rendering with a single network evaluation per pixel for small baseline light field datasets and can also be applied to larger baselines with only a few evaluations per pixel. At the core of our approach is a ray-space embedding network that maps the 4D ray-space manifold into an intermediate, interpolable latent space. Our method achieves state-of-the-art quality on dense forward-facing datasets such as the Stanford Light Field dataset. In addition, for forward-facing scenes with sparser inputs we achieve results that are competitive with NeRF-based approaches in terms of quality while providing a better speed/quality/memory trade-off with far fewer network evaluations.</p>
+<h2>Overview Video</h2>
+<div style="margin-left: auto; margin-right: auto; text-align: center;">
+  <iframe width="840" height="472" src="https://www.youtube.com/embed/HR8TIyKtoWA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
 <h2>BibTeX</h2>
 <pre><code>@article{attal2021learning,
   author    = {Benjamin Attal and Jia-Bin Huang and Michael Zollh{\"o}fer and Johannes Kopf and Changil Kim},
