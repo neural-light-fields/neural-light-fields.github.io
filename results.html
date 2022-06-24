@@ -20,15 +20,24 @@ window.onload = function() {
 
   vidcmp_sparse_handler = new VideoHandler(3, 3, "vidcmp_sparse_data", "vidcmp_sparse_btn", "vidcmp_sparse_vid");
   vidcmp_sparse_handler.register();
-  vidcmp_sparse_handler.play_video();
+  try {
+    vidcmp_sparse_handler.play_video();
+  } catch (e) {
+  }
 
   vidcmp_dense_handler = new VideoHandler(3, 4, "vidcmp_dense_data", "vidcmp_dense_btn", "vidcmp_dense_vid");
   vidcmp_dense_handler.register();
-  vidcmp_dense_handler.play_video();
+  try {
+    vidcmp_dense_handler.play_video();
+  } catch (e) {
+  }
 
   vidcmp_embed_handler = new VideoHandler(1, 4, "vidcmp_embed_data", "vidcmp_embed_btn", "vidcmp_embed_vid");
   vidcmp_embed_handler.register();
-  vidcmp_embed_handler.play_video();
+  try {
+    vidcmp_embed_handler.play_video();
+  } catch (e) {
+  }
 
   imgcmp_shiny_handler = new ImageHandler(2, 4, "imgcmp_shiny_data", "imgcmp_shiny_btn", "imgcmp_shiny_img");
   imgcmp_shiny_handler.register();

@@ -8,11 +8,17 @@
 window.onload = function() {
   teaser_sparse_handler = new VideoHandler(1, 2, "teaser_sparse_data", "teaser_sparse_btn", "teaser_sparse_vid");
   teaser_sparse_handler.register();
-  teaser_sparse_handler.play_video();
+  try {
+    teaser_sparse_handler.play_video();
+  } catch (e) {
+  }
 
   teaser_dense_handler = new VideoHandler(1, 4, "teaser_dense_data", "teaser_dense_btn", "teaser_dense_vid");
   teaser_dense_handler.register();
-  teaser_dense_handler.play_video();
+  try {
+    teaser_dense_handler.play_video();
+  } catch (e) {
+  }
 };
 </script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-CQVT3LMJLZ"></script>
