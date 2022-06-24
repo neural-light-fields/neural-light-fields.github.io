@@ -214,8 +214,21 @@ img.on {
 
 .teaser video {
   width: 410px;
+}
+
+.teaser .crop {
+  overflow: hidden;
+  height: 307px;
+}
+
+.teaser .horns video {
   height: 307px;
   margin-top: 0px;
+}
+
+.teaser .tarot video {
+  height: 410px;
+  margin-top: -65px;
 }
 
 .closeup {
