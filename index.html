@@ -64,6 +64,55 @@ window.onload = function() {
   <a href="https://drive.google.com/drive/folders/1MnniS2uk5vIQ4XtzVSbD-CY7oEZQoL-2?usp=sharing"><span><img src="resources/hdd-fill.svg" style="vertical-align: -10%;"/> Data</span></a>
 </div>
 
+<div class="flex" style="justify-content: space-around; margin-bottom: 0em;">
+  <video controls muted loop autoplay style="width: 410px; height: 230px; display: block;">
+    <source src="videos/shiny_cd_ours.mp4" type="video/mp4"/>
+  </video>
+  <video controls muted loop autoplay style="width: 410px; height: 230px; display: block;">
+    <source src="videos/shiny_lab_ours.mp4" type="video/mp4"/>
+  </video>
+</div>
+<div class="flex" style="justify-content: space-around; margin-bottom: 1em;">
+  <video controls muted loop autoplay style="width: 410px; height: 307px; display: block;">
+    <source src="videos/llff_horns_ours.mp4" type="video/mp4"/>
+  </video>
+  <video controls muted loop autoplay style="width: 410px; height: 307px; display: block;">
+    <source src="videos/teaser_stanford_tarot_small_ours.mp4" type="video/mp4"/>
+  </video>
+</div>
+
+<h2>Overview</h2>
+<div class="justify">
+  <p>We present <em>Neural Light Fields with Ray-Space Embedding</em>. A light field directly represents integrated radiance along rays. Unlike neural radiance fields, which need many network evaluations to approximate a volume integral, rendering from a light field only requires one evaluation per ray.</p>
+  <img src="figures/web_teaser.svg" style="display: block; width: 80%; margin-left: auto; margin-right: auto;"/>
+  <p>However, learning a neural light field is challenging, and using popular coordinate-based neural network architectures leads to poor view synthesis quality. We present a novel ray-space embedding approach to mitigate this challenge. By leveraging ray-space embedding, in addition to subdivision, our neural light fields provide a more favorable trade-off between quality, speed, and memory than the previous state of the art, as shown in the graph below.</p>
+  <img src="figures/teaser_graph.svg" style="display: block; width: 40%; margin-left: auto; margin-right: auto;"/>
+</div>
+
+<!--
+<div style="text-align: center;">
+  <div class="flex" style="justify-content: space-between; align-items: center; margin-top: 2em;">
+    <img src="figures/web_teaser.svg" style="display: block; width: 65%; margin-left:"/>
+    <img src="figures/teaser_graph.svg" style="display: block; width: 34%; margin-left:"/>
+  </div>
+  <p>We present <em>Neural Light Fields with Ray-Space Embedding</em>, which map rays directly to integrated radiance.</p>
+</div>
+-->
+
+<!--
+<div class="flex" style="justify-content: space-between; align-items: center; margin-top: 2em;">
+  <img src="figures/teaser_illustration.svg" style="width: 29%;"/>
+  <img src="figures/teaser_visual.svg" style="width: 40%;"/>
+  <img src="figures/teaser_graph.svg" style="width: 29%;"/>
+</div>
+<p class="justify">We present <em>Neural Light Fields with Ray-Space Embedding</em>, which map rays directly to integrated radiance (<em>left</em>). Our representation allows for high-quality view synthesis with faithful reconstruction of complex view dependence (<em>middle</em>). We are able to synthesize novel views in a fraction of the time required for the current state-of-the-art approaches, with comparable memory footprint. Our method achieves a more favorable trade-off between quality, speed, and memory than existing approaches for both dense and sparse light fields (<em>right</em>).</p>
+-->
+
+<h2>Results</h2>
+<div class="justify">
+<p>We demonstrate our method on a variety of scenes, both sparsely and densely sampled, from the <a href="https://www.matthewtancik.com/nerf">NeRF's Real Forward-Facing</a> dataset, the <a href="http://lightfield.stanford.edu/">Stanford Light Fields</a> dataset and <a href="https://nex-mpi.github.io/">NeX-MPI's Shiny</a> dataset. Our results show faithful reconstruction of highly complex view dependent effects. More results, including baseline comparisons and ablations, are found on <a href="results.html">our supplemental webpage</a>. All rendered images from our method and all baseline methods are posted <a href="https://drive.google.com/drive/folders/1PHIFKF-KFllbyQACRf4-CBolQOM5-Fvk?usp=sharing">here</a>.
+</div>
+
 <!-- teaser close-ups -->
 <div class="flex" style="justify-content: space-around; margin-bottom: 1em;">
 
@@ -163,39 +212,16 @@ window.onload = function() {
 
 </div>
 
-<h2>Overview</h2>
-<div class="justify">
-  <p>We present <em>Neural Light Fields with Ray-Space Embedding</em>. A light field directly represents integrated radiance along rays. Unlike neural radiance fields, which need many network evaluations to approximate a volume integral, rendering from a light field only requires one evaluation per ray.</p>
-  <img src="figures/web_teaser.svg" style="display: block; width: 80%; margin-left: auto; margin-right: auto;"/>
-  <p>However, learning a neural light field is challenging, and using popular coordinate-based neural network architectures leads to poor view synthesis quality. We present a novel ray-space embedding approach to mitigate this challenge. By leveraging ray-space embedding, in addition to subdivision, our neural light fields provide a more favorable trade-off between quality, speed, and memory than the previous state of the art, as shown in the graph below.</p>
-  <img src="figures/teaser_graph.svg" style="display: block; width: 40%; margin-left: auto; margin-right: auto;"/>
-  <p>We demonstrate our method on a variety of scenes, both sparsely and densely sampled, from the <a href="https://www.matthewtancik.com/nerf">NeRF's Real Forward-Facing</a> dataset and the <a href="http://lightfield.stanford.edu/">Stanford Light Fields</a> dataset. More results, including baseline comparisons and ablations, are found on <a href="results.html">our supplemental webpage</a>.
-</div>
 
-<!--
-<div style="text-align: center;">
-  <div class="flex" style="justify-content: space-between; align-items: center; margin-top: 2em;">
-    <img src="figures/web_teaser.svg" style="display: block; width: 65%; margin-left:"/>
-    <img src="figures/teaser_graph.svg" style="display: block; width: 34%; margin-left:"/>
-  </div>
-  <p>We present <em>Neural Light Fields with Ray-Space Embedding</em>, which map rays directly to integrated radiance.</p>
-</div>
--->
 
-<!--
-<div class="flex" style="justify-content: space-between; align-items: center; margin-top: 2em;">
-  <img src="figures/teaser_illustration.svg" style="width: 29%;"/>
-  <img src="figures/teaser_visual.svg" style="width: 40%;"/>
-  <img src="figures/teaser_graph.svg" style="width: 29%;"/>
-</div>
-<p class="justify">We present <em>Neural Light Fields with Ray-Space Embedding</em>, which map rays directly to integrated radiance (<em>left</em>). Our representation allows for high-quality view synthesis with faithful reconstruction of complex view dependence (<em>middle</em>). We are able to synthesize novel views in a fraction of the time required for the current state-of-the-art approaches, with comparable memory footprint. Our method achieves a more favorable trade-off between quality, speed, and memory than existing approaches for both dense and sparse light fields (<em>right</em>).</p>
--->
 <h2>Abstract</h2>
 <p class="justify">Neural radiance fields (NeRFs) produce state-of-the-art view synthesis results. However, they are slow to render, requiring hundreds of network evaluations per pixel to approximate a volume rendering integral. Baking NeRFs into explicit data structures enables efficient rendering, but results in a large increase in memory footprint and, in many cases, a quality reduction. In this paper, we propose a novel neural light field representation that, in contrast, is compact and directly predicts integrated radiance along rays. Our method supports rendering with a single network evaluation per pixel for small baseline light field datasets and can also be applied to larger baselines with only a few evaluations per pixel. At the core of our approach is a ray-space embedding network that maps the 4D ray-space manifold into an intermediate, interpolable latent space. Our method achieves state-of-the-art quality on dense forward-facing datasets such as the Stanford Light Field dataset. In addition, for forward-facing scenes with sparser inputs we achieve results that are competitive with NeRF-based approaches in terms of quality while providing a better speed/quality/memory trade-off with far fewer network evaluations.</p>
+
 <h2>Overview Video</h2>
 <div style="margin-left: auto; margin-right: auto; text-align: center;">
   <iframe width="840" height="472" src="https://www.youtube.com/embed/Emnd16FxVHc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </div>
+
 <h2>BibTeX</h2>
 <pre><code>@inproceedings{attal2022learning,
   author    = {Benjamin Attal and Jia-Bin Huang and Michael Zollh{\"o}fer and Johannes Kopf and Changil Kim},
@@ -203,5 +229,6 @@ window.onload = function() {
   booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
   year      = {2022},
 }</code></pre>
+
 </body>
 </html>
