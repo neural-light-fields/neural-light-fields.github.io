@@ -6,7 +6,7 @@
 <script src="resources/handlers.js"></script>
 <script>
 window.onload = function() {
-  teaser_sparse_handler = new VideoHandler(1, 3, "teaser_sparse_data", "teaser_sparse_btn", "teaser_sparse_vid");
+  teaser_sparse_handler = new VideoHandler(1, 2, "teaser_sparse_data", "teaser_sparse_btn", "teaser_sparse_vid");
   teaser_sparse_handler.register();
   teaser_sparse_handler.play_video();
 
@@ -62,21 +62,17 @@ window.onload = function() {
 <div class="flex" style="justify-content: space-around; margin-bottom: 1em;">
 
   <div class="flex" style="width: 410px; justify-content: space-between;">
-    <div class="closeup">
-      <img src="figures/horns/closeup1_gt.png">
+    <div class="closeup" style="width: 130px;">
+      <img src="figures/horns/closeup1b_gt.png">
       <div><em>Ground Truth</em></div>
     </div>
-    <div class="closeup">
-      <img src="figures/horns/closeup1_ours.png">
+    <div class="closeup" style="width: 130px;">
+      <img src="figures/horns/closeup1b_ours.png">
       <div><em>Ours</em><br/>31.7dB / 2.1s</div>
     </div>
-    <div class="closeup">
-      <img src="figures/horns/closeup1_nerf.png">
+    <div class="closeup" style="width: 130px;">
+      <img src="figures/horns/closeup1b_nerf.png">
       <div><a href="https://www.matthewtancik.com/nerf"><em>NeRF</em></a><br/>31.1dB / 10.4s</div>
-    </div>
-    <div class="closeup">
-      <img src="figures/horns/closeup1_ours_teacher.png">
-      <div><span class="tooltip"><em>Ours (w/ t)</em><span class="tooltiptext">Ours with soft student-teacher regularization with a trained NeRF as teacher.</span></span><br/>31.7dB / 2.1s</div>
     </div>
   </div>
 
@@ -114,9 +110,6 @@ window.onload = function() {
       <video id="teaser_sparse_vid1" loop>
         <source src="videos/llff_horns_nerf.mp4" type="video/mp4"/>
       </video>
-      <video id="teaser_sparse_vid2" loop>
-        <source src="videos/llff_horns_ours_teacher.mp4" type="video/mp4"/>
-      </video>
     </div>
     <div style="display: none;">
       <button id="teaser_sparse_data0" value="llff_horns">Horns</button>
@@ -125,7 +118,6 @@ window.onload = function() {
       <div class="flex">
         <button id="teaser_sparse_btn0" value="ours" class="on">Ours</button>
         <button id="teaser_sparse_btn1" value="nerf">NeRF</button>
-        <button id="teaser_sparse_btn2" value="ours_teacher">Ours (w/ Teacher)</button>
       </div>
     </div>
   </div>
@@ -169,7 +161,7 @@ window.onload = function() {
 <div class="justify">
   <p>We present <em>Neural Light Fields with Ray-Space Embedding</em>. A light field directly represents integrated radiance along rays. Unlike neural radiance fields, which need many network evaluations to approximate a volume integral, rendering from a light field only requires one evaluation per ray.</p>
   <img src="figures/web_teaser.svg" style="display: block; width: 80%; margin-left: auto; margin-right: auto;"/>
-  <p>However, learning a neural light field is challenging, and using popular coordinate-based neural network architectures leads to poor view synthesis quality. We present a novel ray-space embedding approach to mitigate this challenge. By leveraging ray-space embedding, in addition to subdivision, and soft student-teacher training, our neural light fields provide a more favorable trade-off between quality, speed, and memory than the previous state of the art, as shown in the graph below.</p>
+  <p>However, learning a neural light field is challenging, and using popular coordinate-based neural network architectures leads to poor view synthesis quality. We present a novel ray-space embedding approach to mitigate this challenge. By leveraging ray-space embedding, in addition to subdivision, our neural light fields provide a more favorable trade-off between quality, speed, and memory than the previous state of the art, as shown in the graph below.</p>
   <img src="figures/teaser_graph.svg" style="display: block; width: 40%; margin-left: auto; margin-right: auto;"/>
   <p>We demonstrate our method on a variety of scenes, both sparsely and densely sampled, from the <a href="https://www.matthewtancik.com/nerf">NeRF's Real Forward-Facing</a> dataset and the <a href="http://lightfield.stanford.edu/">Stanford Light Fields</a> dataset. More results, including baseline comparisons and ablations, are found on <a href="results.html">our supplemental webpage</a>.
 </div>

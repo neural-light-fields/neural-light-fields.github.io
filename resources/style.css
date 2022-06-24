@@ -168,8 +168,8 @@ p.btncap {
 .horns button {
   text-align: center;
   display: block;
-  min-width: 11ch;
-  width: 130px;
+  min-width: 27ch;
+  width: 180px;
 }
 .tarot button {
   text-align: center;
